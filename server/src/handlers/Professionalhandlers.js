@@ -1,4 +1,4 @@
-const {searchProfessionalByNameController, getAllProfessionalController, getProfessionalByIdController} = require ("../controllers/ProfessionalController")
+const {searchProfessionalByNameController, getAllProfessionalController, getProfessionalByIdController, createProfessionalController} = require ("../controllers/ProfessionalController")
 
 const GetProfessionalHandler = async (req, res) => {
     const { name } = req.query;
@@ -24,5 +24,27 @@ const GetProfessionalbyIdHandler = async (req, res) => {
 
 
 
+const CreateProfessionalHandler = async (req, res) => {
+    const { name, profileImage, specialty, experience, education, certifications, contact, isActive } = req.body;
+    try {
+        const newProfessional = await createProfessionalController({
+            name,
+            profileImage,
+            specialty,
+            experience,
+            education,
+            certifications,
+            contact,
+            isActive
+        });
+        res.status(200).json(newProfessional);
+    } catch (error) {
+        res.status(404).json({ error: error.message });
+    }
+}
 
-module.exports = {GetProfessionalHandler, GetProfessionalbyIdHandler}
+
+
+
+
+module.exports = {GetProfessionalHandler, GetProfessionalbyIdHandler, CreateProfessionalHandler}

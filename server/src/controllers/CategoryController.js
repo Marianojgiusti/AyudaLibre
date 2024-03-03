@@ -6,33 +6,44 @@ const {Sequelize} = require ("sequelize")
 const getAllCategoryController = async () => {
     const CategoryFind = await Category.findAll({
       include: {
-        model: Professional,
-        through:{attributes: []},
-        attributes: ["name", "profileImage"]
+        model: Professional
       }
     })
     return CategoryFind;
 };
 
 const createCategoryController = async (name, description, iconUrl) => {
-  if (!Array.isArray(Professional)) {
-    throw new Error('error probando');
-  }
+  try {
+    // Verifica si la categoría ya existe en la base de datos
+    const existingCategory = await Category.findOne({ where: { name } });
+    if (existingCategory) {
+      throw new Error('La categoría ya existe.');
+    } else {
+       // Crea la categoría en la base de datos
+    const newCategory = await Category.create({ name, description, iconUrl });
 
-  const createcategory = await Category.create({ name, description, iconUrl });
-
-  for (const professionalName of Professional) {
-    const findprofessional = await Professional.findOne({
-      where: { name: { [Sequelize.Op.iLike]: `%${professionalName}%` } }
+    // Asocia la categoría con los profesionales que contienen el nombre de la categoría
+    const professionalsWithCategoryName = await Professional.findAll({
+      where: { name: { [Sequelize.Op.iLike]: `%${name}%` } }
     });
 
-    if (findprofessional) {
-      await createcategory.addProfessional(findprofessional);
+    // Asocia la categoría con cada profesional encontrado
+    for (const professional of professionalsWithCategoryName) {
+      await newCategory.addProfessional(professional);
     }
-  }
 
-  return createcategory;
-}
-    
+    // Retorna la nueva categoría creada
+    return newCategory;
+    }
+
+   
+  } catch (error) {
+    // Manejo de errores
+    throw new Error('Error al crear la categoría o puede que ya exista');
+  }
+};
+
+
+
 
  module.exports = { getAllCategoryController, createCategoryController}
