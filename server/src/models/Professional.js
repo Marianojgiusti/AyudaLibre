@@ -9,7 +9,7 @@ module.exports = (sequelize) => {
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     profileImage: {
       type: DataTypes.STRING, // Almacenamos la URL de la imagen del perfil
@@ -39,6 +39,8 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true // Establece el valor por defecto como activo
-    }
-  });
+    }, 
+  },
+  {timestamps: false});
+ 
 };

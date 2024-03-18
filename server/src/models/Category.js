@@ -24,5 +24,6 @@ module.exports = (sequelize) => {
       allowNull: false,
       defaultValue: true // Establece el valor por defecto como activo
     }
-  });
+  },
+  {timestamps: false});
 };

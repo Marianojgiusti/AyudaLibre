@@ -13,10 +13,9 @@ const getAllCategoryController = async () => {
 };
 
 const createCategoryController = async (name, description, iconUrl) => {
-  try {
     // Verifica si la categoría ya existe en la base de datos
     const existingCategory = await Category.findOne({ where: { name } });
-    if (existingCategory) {
+    if (existingCategory ) {
       throw new Error('La categoría ya existe.');
     } else {
        // Crea la categoría en la base de datos
@@ -35,13 +34,8 @@ const createCategoryController = async (name, description, iconUrl) => {
     // Retorna la nueva categoría creada
     return newCategory;
     }
+  } 
 
-   
-  } catch (error) {
-    // Manejo de errores
-    throw new Error('Error al crear la categoría o puede que ya exista');
-  }
-};
 
 
 

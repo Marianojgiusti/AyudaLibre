@@ -1,6 +1,6 @@
 const { Router } = require('express');
 // Importar todos los routers;
-const Professional = require('./RoutesProfessional');
+const Professional = require('./RoutesProfessional.js');
 const Category = require('./RoutesCategory.js')
 
 const MainRouter = Router();

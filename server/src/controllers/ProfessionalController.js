@@ -6,9 +6,8 @@ const {Sequelize} = require ("sequelize")
 const getAllProfessionalController = async () => {
     const Professionalfind = await Professional.findAll({
         include: {
-            model: Category,
-            atributtes: [],
-            through:{atributtes: []} 
+            model: Category
+           
         }
     });
     return Professionalfind;
@@ -39,38 +38,39 @@ const getProfessionalByIdController = async (id) => {
     return findById;
 }
 
-const createProfessionalController = async (req, res) => {
-    const { name, profileImage, specialty, experience, education, certifications, contact, categoryId } = req.body;
-  
+const createProfessionalController = async (
+    name,
+    profileImage,
+    specialty,
+    experience,
+    education,
+    certifications, 
+    contact,
+    categoryId, // Agrega category como parámetro
+    isActive) => {
     try {
-      // Crea el profesional
-      const professional = await Professional.create({
+      // Verifica si el profesional ya existe en la base de datos
+      const existingProfessional = await Professional.findOne({ where: { name } });
+      if (existingProfessional ) {
+        throw new Error('El profesional ya existe.');
+      }
+    
+      // Crea el profesional en la base de datos
+      const newProfessional = await Professional.create({   
         name,
         profileImage,
         specialty,
         experience,
         education,
-        certifications,
+        certifications, 
         contact,
-        isActive: true
+        categoryId, // Asigna el category al profesional
+        isActive
       });
   
-      // Encuentra la categoría basada en el ID recibido
-      const category = await Category.findByPk(categoryId);
-  
-      // Asocia el profesional con la categoría
-      if (category) {
-        await professional.addCategory(category);
-      } else {
-        throw new Error('No se encontró la categoría especificada.');
-      }
-  
-      // Si todo fue exitoso, envía una respuesta exitosa
-      return res.status(201).json({ message: 'Profesional creado exitosamente.' });
+      return newProfessional;
     } catch (error) {
-      // Si ocurre algún error, envía un mensaje de error
-      console.error('Error al crear profesional:', error);
-      return res.status(500).json({ error: 'Se produjo un error al crear el profesional.' });
+      throw new Error('Error al crear el profesional: ' + error.message);
     }
   };
   
