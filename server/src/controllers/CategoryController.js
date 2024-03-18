@@ -12,6 +12,17 @@ const getAllCategoryController = async () => {
     return CategoryFind;
 };
 
+const searchCategoryByNameController = async (name) => {
+  const Categoryfindname = await Category.findAll({
+      where: { name:{[Sequelize.Op.iLike]: `%${name}%`} },
+      include:{
+          model: Professional
+      }
+      })
+   
+       return Categoryfindname; 
+  };
+
 const createCategoryController = async (name, description, iconUrl) => {
     // Verifica si la categoría ya existe en la base de datos
     const existingCategory = await Category.findOne({ where: { name } });
@@ -35,9 +46,17 @@ const createCategoryController = async (name, description, iconUrl) => {
     return newCategory;
     }
   } 
+ 
+  const getCategoryByIdController = async (id) => {
+    let findById = await Category.findOne({
+      where: { id: id}
+  
+  });
+  return findById;
+
+  }
 
 
 
 
-
- module.exports = { getAllCategoryController, createCategoryController}
+ module.exports = { getAllCategoryController, createCategoryController, searchCategoryByNameController, getCategoryByIdController}
